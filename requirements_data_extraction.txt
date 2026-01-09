@@ -1,0 +1,13 @@
+# Data Extraction Pipeline Requirements
+# Install with: pip install -r requirements_data_extraction.txt
+
+# Core data processing libraries
+numpy>=1.21.0
+pandas>=1.3.0
+
+# Computer vision and hand pose detection
+opencv-python>=4.5.0
+mediapipe>=0.8.9
+
+# Optional: For better video codec support
+# opencv-python-headless>=4.5.0  # Use instead of opencv-python for headless environments
