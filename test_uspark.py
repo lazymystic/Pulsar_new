@@ -171,7 +171,7 @@ def generate_test_scores(_number_of_runs:int=1, _model_name:str='JS_AC_PU'):
                 
                 model = aagcn_small.Model(adaptive=adaptive, num_class=CFG.num_classes, num_point=21, num_person=1, graph=graph, drop_out=0.5, in_channels=CFG.num_feats)
                 # Load the saved model checkpoint
-                checkpoint = torch.load(f'./pretrained_models/{model_name}/model.pth', map_location=device)
+                checkpoint = torch.load(f'./pretrained_models/{model_name}/model.pth', map_location=device,weights_only=False)
                 # Extract the state dictionary for the model
                 model_state_dict = checkpoint['model_state_dict']
                 # Load the state dictionary into your model
@@ -193,7 +193,7 @@ def generate_test_scores(_number_of_runs:int=1, _model_name:str='JS_AC_PU'):
             
             model = aagcn_small.Model(adaptive=adaptive, num_class=CFG.num_classes, num_point=21, num_person=1, graph=graph, drop_out=0.5, in_channels=CFG.num_feats)
             # Load the saved model checkpoint
-            checkpoint = torch.load(f'./pretrained_models/{_model_name}/model.pth', map_location=device)
+            checkpoint = torch.load(f'./pretrained_models/{_model_name}/model.pth', map_location=device,weights_only=False)
             # Extract the state dictionary for the model
             model_state_dict = checkpoint['model_state_dict']
             # Load the state dictionary into your model
@@ -293,7 +293,7 @@ if __name__ == "__main__":
     script_start_time = time.time()
     print(f"[INFO] Script execution started at: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(script_start_time))}")
     
-    models = ['JS', 'JS_PU', 'JS_AC', 'JS_AC_PU', 'AS_AC_PU', 'BS_AC_PU', 'VS_AC_PU', 'PULSAR']
+    models = [ 'JS_AC_PU', 'AS_AC_PU', 'BS_AC_PU', 'VS_AC_PU']
     results = []
     number_of_runs=20
 

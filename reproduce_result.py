@@ -27,7 +27,7 @@ dataset_name = './datasets/uspark_finger_tapping/train_val_data'
 augmentations = ["original", "flip-vert", "flip-hor", "flip-hor-vert"]
 
 
-all_csv = os.listdir(dataset_path)
+all_csv = os.listdir(dataset_name)
 # print(len(all_csv))
 
 ## get patient ids by splitting the file name
@@ -39,7 +39,7 @@ patient_ids = []
 for i in patient_ids_all:
     if i not in patient_ids:
         patient_ids.append(i)
-
+patient_ids.sort()
 print(len(patient_ids))
 print(patient_ids[:10])
 np.random.seed(24)
