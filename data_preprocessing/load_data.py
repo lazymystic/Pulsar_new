@@ -21,8 +21,10 @@ patient_ids = []
 for i in patient_ids_all:
     if i not in patient_ids:
         patient_ids.append(i)
-
+        
 print(len(patient_ids))
+print(patient_ids[:10])
+patient_ids = sorted(patient_ids)
 print(patient_ids[:10])
 
 ## make train and val split
