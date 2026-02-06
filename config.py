@@ -5,9 +5,9 @@ class CFG:
     sequence_length = 80
     num_classes = 2
     num_feats = 3
-    lr = 1e-1
+    lr = 1e-4
     min_lr = 1e-5
-    epochs = 1
+    epochs = 30
     print_freq = 100
     resume = False
 
