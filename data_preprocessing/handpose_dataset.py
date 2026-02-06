@@ -202,6 +202,47 @@ class HandPoseDatasetMapped(Dataset):
         # Reshape and feature engineering...
         x = seq_x.reshape(CFG.sequence_length, 21, 3)
         
+        if CFG.add_feats:
+            #additional features: https://link.springer.com/content/pdf/10.1186/s13640-019-0476-x.pdf
+            #r = np.sqrt(x**2 + y**2 + z**2)
+            #theta = np.arccos(z/r)
+            #phi = np.arctan(y/x)
+            theta = phi = r = np.zeros_like(x[:, :, 0])
+
+            if x.all() != 0:
+              r = np.sqrt(x[:, :, 0]**2 + x[:, :, 1]**2 + x[:, :, 2]**2)
+              theta = np.arccos(x[:, :, 2]/r)
+              phi = np.arctan(x[:, :, 1]/x[:, :, 0])
+            add_feats = np.stack([r, theta, phi], axis=-1)
+            
+            x = np.concatenate((x, add_feats),axis=2)
+
+        if self.bone_stream:
+            dist = np.zeros_like(x)
+            for v1, v2 in adj_mat.inward:
+                dist[:, v1, :] = x[:, v2, :] - x[:, v1, :]
+            x = dist
+
+        if self.vel_stream:
+            dist = np.zeros_like(x)
+            for v1, v2 in adj_mat.inward:
+                dist[:, v1, :] = x[:, v2, :] - x[:, v1, :]
+            vel = np.gradient(dist, axis=0)
+            x = vel
+            
+        if self.acc_stream:
+            dist = np.zeros_like(x)
+            for v1, v2 in adj_mat.inward:
+                dist[:, v1, :] = x[:, v2, :] - x[:, v1, :]
+            vel = np.gradient(dist, axis=0)
+            acc = np.gradient(vel, axis=0)
+            x = acc
+
+        if CFG.add_phi:
+            phi = np.arctan(x[:, :, 1]/x[:, :, 0])
+            x = np.concatenate((x, phi),axis=2)
+
+        
         # [Insert Stream Logic Here]
 
         return x, seq_y
