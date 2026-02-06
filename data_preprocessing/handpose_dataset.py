@@ -1,7 +1,6 @@
 from config import CFG
 import sklearn.preprocessing
 import numpy as np
-from ast import literal_eval as make_tuple
 from torch.utils.data import Dataset, DataLoader
 import pandas as pd
 import torch
@@ -11,24 +10,6 @@ import matplotlib.pyplot as plt
 import random
 from utils import adj_mat
 
-def df_to_numpy(df):
-#   print("DF TO NUMPY")
-  x_elems = df.drop("LABEL", axis=1).values
-#   print("X ELEMS SHAPE: ", x_elems.shape)
-  x = [make_tuple(elem) for elem in x_elems for elem in elem]
-  x = np.array(x)
-#   print("X SHAPE: ", x.shape)
-  x = x.reshape(len(x_elems), 3*21)
-#   print("X SHAPE: ", x.shape)
-  lb = sklearn.preprocessing.LabelBinarizer().fit(CFG.classes)
-  y = np.array(df["LABEL"]).reshape(-1,1)
-#   print("Y SHAPE: ", y.shape)
-  y_ohe = lb.transform(y)
-  y_ohe = np.hstack((y_ohe,1-y_ohe)) ### ADJUSTMENT FOR CLASS = 2
-#   print("Y OHE SHAPE: ", y_ohe.shape)
-
-  train_data_numpy = (x, y_ohe)
-  return train_data_numpy
 
 class HandPoseDatasetNumpy(Dataset):
     def __init__(self, data, bone_stream=CFG.bone_stream, vel_stream=CFG.vel_stream, acc_stream=CFG.acc_stream):
@@ -217,20 +198,20 @@ class HandPoseDatasetMapped(Dataset):
             
             x = np.concatenate((x, add_feats),axis=2)
 
-        if self.bone_stream:
+        if CFG.bone_stream:
             dist = np.zeros_like(x)
             for v1, v2 in adj_mat.inward:
                 dist[:, v1, :] = x[:, v2, :] - x[:, v1, :]
             x = dist
 
-        if self.vel_stream:
+        if CFG.vel_stream:
             dist = np.zeros_like(x)
             for v1, v2 in adj_mat.inward:
                 dist[:, v1, :] = x[:, v2, :] - x[:, v1, :]
             vel = np.gradient(dist, axis=0)
             x = vel
             
-        if self.acc_stream:
+        if CFG.acc_stream:
             dist = np.zeros_like(x)
             for v1, v2 in adj_mat.inward:
                 dist[:, v1, :] = x[:, v2, :] - x[:, v1, :]

@@ -15,8 +15,8 @@ from sklearn.utils import class_weight
 import sklearn
 
 from model import aagcn_small, SAM, loss
-from data_preprocessing.handpose_dataset import HandPoseDatasetNumpy, df_to_numpy
-from data_preprocessing.load_data import get_train_data, get_val_data
+from data_preprocessing.handpose_dataset import HandPoseDatasetNumpy,  HandPoseDatasetMapped
+from data_preprocessing.load_data import get_train_data, get_val_data, get_train_data_list_numpy, get_val_data_list_numpy, df_to_numpy
 from config import CFG
 from utils import training_supervision, adj_mat
 from torchsummary import summary
@@ -34,13 +34,14 @@ curr_dir = os.path.dirname(__file__)
 os.makedirs(f"{curr_dir}/trained_models/{CFG.experiment_name}", exist_ok=True)
 
 
-print("[INFO] TRAIN DATA DISTRIBUTION")
-print(df_train["LABEL"].value_counts())
-print("[INFO] VALIDATION DATA DISTRIBUTION")
-print(df_val["LABEL"].value_counts())
+# print("[INFO] TRAIN DATA DISTRIBUTION")
+# print(df_train["LABEL"].value_counts())
+# print("[INFO] VALIDATION DATA DISTRIBUTION")
+# print(df_val["LABEL"].value_counts())
 
-if CFG.debug:
-    df_train = df_train[:500]
+# if CFG.debug:
+#     df_train = df_train[:500]
+print("hola")
 
 def train_func(model, data_loader, criterion, optimizer, scheduler, epoch):
     model.train()
@@ -135,14 +136,20 @@ def eval_func(model, criterion, data_loader, epoch):
     writer.add_scalar('Loss/Validation', loss_total/i, global_step)
     return loss_total, np.argmax(preds, axis=2).flatten(),  np.array(groundtruth).flatten()
 
-df_train = get_train_data()
-df_val = get_val_data()
+# df_train = get_train_data()
+# df_val = get_val_data()
     
-train_numpy = df_to_numpy(df_train)
-val_numpy = df_to_numpy(df_val)
+# train_numpy = df_to_numpy(df_train)
+# val_numpy = df_to_numpy(df_val)
  
-train_set = HandPoseDatasetNumpy(train_numpy)
-val_set = HandPoseDatasetNumpy(val_numpy)
+# train_set = HandPoseDatasetNumpy(train_numpy)
+# val_set = HandPoseDatasetNumpy(val_numpy)
+
+train_numpy_list = get_train_data_list_numpy()
+val_numpy_list = get_val_data_list_numpy()
+
+train_set = HandPoseDatasetMapped(train_numpy_list)
+val_set = HandPoseDatasetMapped(val_numpy_list)
 
 train_loader = DataLoader(train_set, batch_size=CFG.batch_size, drop_last=True, shuffle=True, pin_memory=True)
 val_loader = DataLoader(val_set, batch_size=CFG.batch_size, drop_last=True, pin_memory=True)

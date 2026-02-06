@@ -1,6 +1,9 @@
 import pandas as pd 
 import os
+from ast import literal_eval as make_tuple
+from config import CFG
 import numpy as np
+from sklearn import preprocessing
 
 curr_dir = os.path.dirname(__file__)
 np.random.seed(24)
@@ -40,6 +43,19 @@ print(train_ids[:10])
 print(val_ids[:10])
 
 
+def df_to_numpy(df):
+    x_elems = df.drop("LABEL", axis=1).values
+    x = [make_tuple(elem) for elem in x_elems for elem in elem]
+    x = np.array(x)
+    x = x.reshape(len(x_elems), 3*21)
+    lb = preprocessing.LabelBinarizer().fit( CFG.classes)
+    y = np.array(df["LABEL"]).reshape(-1,1)
+    y_ohe = lb.transform(y)
+    y_ohe = np.hstack((y_ohe,1-y_ohe)) 
+    train_data_numpy = (x, y_ohe)
+    return train_data_numpy
+
+
 def dfs_from_ids(ids,get_augmented=True):
     dfs = []
     for i in ids:
@@ -65,6 +81,11 @@ def dfs_from_ids(ids,get_augmented=True):
             dfs.append(df)
     return dfs
 
+def get_train_data_list_numpy():
+    return [df_to_numpy(df) for df in dfs_from_ids(train_ids) if df.shape[0]>0]
+
+def get_val_data_list_numpy():
+    return [df_to_numpy(df) for  df in dfs_from_ids(val_ids) if df.shape[0]>0]
 
 def get_train_data():
     train_dfs = dfs_from_ids(train_ids)
