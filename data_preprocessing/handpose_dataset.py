@@ -12,20 +12,20 @@ import random
 from utils import adj_mat
 
 def df_to_numpy(df):
-  print("DF TO NUMPY")
+#   print("DF TO NUMPY")
   x_elems = df.drop("LABEL", axis=1).values
-  print("X ELEMS SHAPE: ", x_elems.shape)
+#   print("X ELEMS SHAPE: ", x_elems.shape)
   x = [make_tuple(elem) for elem in x_elems for elem in elem]
   x = np.array(x)
-  print("X SHAPE: ", x.shape)
+#   print("X SHAPE: ", x.shape)
   x = x.reshape(len(x_elems), 3*21)
-  print("X SHAPE: ", x.shape)
+#   print("X SHAPE: ", x.shape)
   lb = sklearn.preprocessing.LabelBinarizer().fit(CFG.classes)
   y = np.array(df["LABEL"]).reshape(-1,1)
-  print("Y SHAPE: ", y.shape)
+#   print("Y SHAPE: ", y.shape)
   y_ohe = lb.transform(y)
   y_ohe = np.hstack((y_ohe,1-y_ohe)) ### ADJUSTMENT FOR CLASS = 2
-  print("Y OHE SHAPE: ", y_ohe.shape)
+#   print("Y OHE SHAPE: ", y_ohe.shape)
 
   train_data_numpy = (x, y_ohe)
   return train_data_numpy
@@ -166,3 +166,42 @@ class HandImageDataset(Dataset):
         img_seq = torch.stack(images)
 
         return img_seq, y
+
+
+class HandPoseDatasetMapped(Dataset):
+    def __init__(self, data_list):
+        self.data_list = data_list # List of tuples: [(x1, y1), (x2, y2), ...]
+        self.index_map = [] 
+        
+        # Build the Index Map
+        for patient_idx, (x_data, _) in enumerate(self.data_list):
+            num_frames = len(x_data)
+            # Calculate how many valid sequences this patient has
+            num_sequences = num_frames - CFG.sequence_length + 1
+            
+            if num_sequences > 0:
+                for start_frame in range(num_sequences):
+                    # Store the address: (Which Patient?, Which Frame?)
+                    self.index_map.append((patient_idx, start_frame))
+
+    def __len__(self):
+        return len(self.index_map)
+
+    def __getitem__(self, idx):
+        # 1. Look up where the data lives
+        patient_idx, start_frame = self.index_map[idx]
+        
+        # 2. Retrieve the specific patient's data
+        full_x, full_y = self.data_list[patient_idx]
+        
+        # 3. Slice safely
+        end_frame = start_frame + CFG.sequence_length
+        seq_x = full_x[start_frame : end_frame]
+        seq_y = full_y[start_frame : end_frame]
+
+        # Reshape and feature engineering...
+        x = seq_x.reshape(CFG.sequence_length, 21, 3)
+        
+        # [Insert Stream Logic Here]
+
+        return x, seq_y

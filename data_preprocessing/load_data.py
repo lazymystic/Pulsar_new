@@ -33,7 +33,7 @@ train_len = int(TRAIN_SPLIT * len(patient_ids))
 np.random.shuffle(patient_ids)
 train_ids = patient_ids[:train_len]
 val_ids = patient_ids[train_len:]
-print(len(train_ids))
+print(len(train_ids)) 
 print(len(val_ids))
 
 print(train_ids[:10])

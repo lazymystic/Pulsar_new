@@ -33,9 +33,7 @@ print(device)
 curr_dir = os.path.dirname(__file__)
 os.makedirs(f"{curr_dir}/trained_models/{CFG.experiment_name}", exist_ok=True)
 
-df_train = get_train_data()
-df_val = get_val_data()
-    
+
 print("[INFO] TRAIN DATA DISTRIBUTION")
 print(df_train["LABEL"].value_counts())
 print("[INFO] VALIDATION DATA DISTRIBUTION")
@@ -137,7 +135,9 @@ def eval_func(model, criterion, data_loader, epoch):
     writer.add_scalar('Loss/Validation', loss_total/i, global_step)
     return loss_total, np.argmax(preds, axis=2).flatten(),  np.array(groundtruth).flatten()
 
-
+df_train = get_train_data()
+df_val = get_val_data()
+    
 train_numpy = df_to_numpy(df_train)
 val_numpy = df_to_numpy(df_val)
  

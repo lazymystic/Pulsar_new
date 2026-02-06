@@ -152,8 +152,9 @@ def generate_test_scores( _model_name:str='JS_AC_PU'):
   df_test = get_val_data()
   print("[INFO] TEST DATA DISTRIBUTION")
   print(df_test["LABEL"].value_counts())
-
+  
   test_numpy = df_to_numpy(df_test)
+  print("TEST NUMPY DATA SHAPE: ", test_numpy[0].shape)
   test_set = HandPoseDatasetNumpy(test_numpy)
   test_loader = DataLoader(test_set, batch_size=CFG.batch_size, drop_last=True, pin_memory=True)
   print(f"[INFO] TEST ON {len(test_set)} DATAPOINTS")
