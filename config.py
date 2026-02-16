@@ -25,9 +25,9 @@ class CFG:
     loss_fn = "Focal"       #Abl Focal, BCE, BCEWithLogits
 
     ## only one of the stream can be true
-    joint_stream = True    #Abl
+    joint_stream = False    #Abl
     bone_stream = False       #Abl
-    vel_stream = False  #Abl
+    vel_stream = True  #Abl
     acc_stream = False  #Abl
 
 
