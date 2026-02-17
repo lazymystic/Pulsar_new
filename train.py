@@ -136,20 +136,20 @@ def eval_func(model, criterion, data_loader, epoch):
     writer.add_scalar('Loss/Validation', loss_total/i, global_step)
     return loss_total, np.argmax(preds, axis=2).flatten(),  np.array(groundtruth).flatten()
 
-# df_train = get_train_data()
-# df_val = get_val_data()
+df_train = get_train_data()
+df_val = get_val_data()
     
-# train_numpy = df_to_numpy(df_train)
-# val_numpy = df_to_numpy(df_val)
+train_numpy = df_to_numpy(df_train)
+val_numpy = df_to_numpy(df_val)
  
-# train_set = HandPoseDatasetNumpy(train_numpy)
-# val_set = HandPoseDatasetNumpy(val_numpy)
+train_set = HandPoseDatasetNumpy(train_numpy)
+val_set = HandPoseDatasetNumpy(val_numpy)
 
-train_numpy_list = get_train_data_list_numpy()
-val_numpy_list = get_val_data_list_numpy()
+# train_numpy_list = get_train_data_list_numpy()
+# val_numpy_list = get_val_data_list_numpy()
 
-train_set = HandPoseDatasetMapped(train_numpy_list)
-val_set = HandPoseDatasetMapped(val_numpy_list)
+# train_set = HandPoseDatasetMapped(train_numpy_list)
+# val_set = HandPoseDatasetMapped(val_numpy_list)
 
 train_loader = DataLoader(train_set, batch_size=CFG.batch_size, drop_last=True, shuffle=True, pin_memory=True)
 val_loader = DataLoader(val_set, batch_size=CFG.batch_size, drop_last=True, pin_memory=True)
