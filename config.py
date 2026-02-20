@@ -26,8 +26,8 @@ class CFG:
 
     ## only one of the stream can be true
     joint_stream = False    #Abl
-    bone_stream = False       #Abl
-    vel_stream = True  #Abl
+    bone_stream = True       #Abl
+    vel_stream = False  #Abl
     acc_stream = False  #Abl
 
 
