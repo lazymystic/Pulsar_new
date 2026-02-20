@@ -26,9 +26,9 @@ class CFG:
 
     ## only one of the stream can be true
     joint_stream = False    #Abl
-    bone_stream = True       #Abl
+    bone_stream = False       #Abl
     vel_stream = False  #Abl
-    acc_stream = False  #Abl
+    acc_stream = True  #Abl
 
 
     experiment_name = f"{experiment_id}__2{model_type}_{dataset}_{loss_fn}_seqlen{sequence_length}_{'SAM_' if sam else ''}{'joints1_' if add_joints1 else ''}{'joints2_' if add_joints2 else ''}{'joint' if joint_stream else ''}{'bone' if bone_stream else ''}{'vel' if vel_stream else ''}{'acc' if acc_stream else ''}"
