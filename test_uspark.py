@@ -14,7 +14,8 @@ from sklearn.metrics import classification_report
 from sklearn.utils import class_weight
 
 from model import aagcn_small, loss
-from data_preprocessing.handpose_dataset import HandPoseDatasetNumpy, df_to_numpy
+from data_preprocessing.handpose_dataset import HandPoseDatasetNumpy
+from data_preprocessing.load_data import df_to_numpy
 from config import CFG
 from utils import adj_mat
 import torchvision
@@ -255,7 +256,7 @@ def generate_test_scores(_number_of_runs:int=1, _model_name:str='JS_AC_PU'):
         print("[TEST] Classification Report")
 
         report = classification_report(gt_test, preds_test, target_names=CFG.classes, digits=3, output_dict=True)
-        classification_reports.append(classification_report(gt_test, preds_test, target_names=CFG.classes, digits=3))
+        classification_reports.append(classification_report(gt_test, preds_test, target_names=CFG.classes, digits=3)))
 
         # Calculate and store metrics
         accuracy = accuracy_score(gt_test, preds_test)
@@ -293,7 +294,7 @@ if __name__ == "__main__":
     script_start_time = time.time()
     print(f"[INFO] Script execution started at: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(script_start_time))}")
     
-    models = [ 'JS_AC_PU', 'AS_AC_PU', 'BS_AC_PU', 'VS_AC_PU']
+    models = [ 'JS_AC_PU', 'AS_AC_PU', 'BS_AC_PU', 'VS_AC_PU', 'PULSAR']
     results = []
     number_of_runs=20
 

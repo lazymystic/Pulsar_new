@@ -12,7 +12,7 @@ from utils import adj_mat
 
 
 class HandPoseDatasetNumpy(Dataset):
-    def __init__(self, data, bone_stream=CFG.bone_stream, vel_stream=CFG.vel_stream, acc_stream=CFG.acc_stream):
+    def __init__(self, data, joint_stream=CFG.joint_stream,bone_stream=CFG.bone_stream, vel_stream=CFG.vel_stream, acc_stream=CFG.acc_stream):
         self.data = data
         self.bone_stream = bone_stream
         self.vel_stream = vel_stream
