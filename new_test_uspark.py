@@ -102,6 +102,7 @@ def evaluate_model(models_name:list[str],number_of_runs=20):
     
     models = [x for item in models_name for x in ([item] if item!='PULSAR' else ['JS_AC_PU', 'BS_AC_PU', 'VS_AC_PU' , 'AS_AC_PU'])]
     models=list(set(models))
+    print(models)
     np.random.seed(24)
     graph = adj_mat.Graph()
     results=[]
@@ -110,7 +111,7 @@ def evaluate_model(models_name:list[str],number_of_runs=20):
         inference_output={}
         run_specific_results=[]
         sampled_ids=np.random.choice(patient_ids,120,replace=True)
-        df_test = get_test_data(patient_ids)
+        df_test = get_test_data(sampled_ids)
         test_numpy = df_to_numpy(df_test)
         print(f"starting execution for {_} runs")
         for model_name in models:
