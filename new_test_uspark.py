@@ -93,7 +93,7 @@ def calculate_mean_and_ci(data, confidence=0.95):
     n = len(data)
     mean = np.mean(data)
     sem = stats.sem(data)
-    margin_of_error = sem * stats.t.ppf((1 + confidence) / 2., n - 1)
+    margin_of_error = sem * stats.t.ppf((1 + confidence) / 2., n - 1) if n-1>0 else 0
     return f"{mean:.2f} \u00B1 {margin_of_error:.2f}"
 
 
