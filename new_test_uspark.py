@@ -41,6 +41,7 @@ for i in patient_ids_all:
     if i not in patient_ids:
         patient_ids.append(i)
 
+patient_ids=sorted(patient_ids)
 print(f'number of unique patient: {len(patient_ids)}')
 print(patient_ids[:10])
 
