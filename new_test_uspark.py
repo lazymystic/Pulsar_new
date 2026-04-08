@@ -162,7 +162,7 @@ def evaluate_model(models_name:list[str],number_of_runs=20,patients_per_sample=1
             preds_test=np.zeros(1,dtype=float)
             gt_test=inference_output["groundtruth"] 
             for model_required in models_required:
-                preds_test += weights[model_required]*inference_output[model_required]
+                preds_test = preds_test + weights[model_required]*inference_output[model_required]
             preds_test = np.argmax(preds_test, axis=1).flatten()
             accuracy = accuracy_score(gt_test, preds_test)
             precision, recall, f1_macro, _ = precision_recall_fscore_support(gt_test, preds_test, average='macro',zero_division=0)
