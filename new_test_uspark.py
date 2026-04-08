@@ -185,6 +185,7 @@ def evaluate_model(models_name:list[str],number_of_runs=20,patients_per_sample=1
     print(f"[INFO] Total execution time: {total_duration:.2f} seconds ({total_duration/60:.2f} minutes)")
     print(f"[INFO] Average time per model: {total_duration/len(models):.2f} seconds")
     print(f"{'='*60}")
+    return df_results
 
 if __name__=="__main__":
     evaluate_model([ 'JS','JS_AC','JS_PU','JS_AC_PU', 'AS_AC_PU', 'BS_AC_PU', 'VS_AC_PU', 'PULSAR'])
