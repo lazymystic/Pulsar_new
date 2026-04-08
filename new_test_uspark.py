@@ -181,6 +181,7 @@ def evaluate_model(models_name:list[str],number_of_runs=20,patients_per_sample=1
         print(df_results.to_string(index=False))
     # Create a DataFrame for the results
     df_results = pd.DataFrame(results)
+    df_results.to_csv('uspark_test_set_scores.csv', index=False)
     df_results = df_results.groupby('Model').agg(calculate_mean_and_ci).reset_index()
     print(df_results.to_string(index=False))
     # End timing and print total execution time
