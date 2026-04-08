@@ -97,7 +97,7 @@ def calculate_mean_and_ci(data, confidence=0.95):
     return f"{mean:.2f} \u00B1 {margin_of_error:.2f}"
 
 
-def evaluate_model(models_name:list[str],number_of_runs=20,patients_per_sample=120):
+def evaluate_model(models_name:list[str],number_of_runs=20,patients_per_sample=120,seed=24,fast_forward=0):
     # Start timing the script execution
     script_start_time = time.time()
     print(f"[INFO] Script execution started at: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(script_start_time))}")
@@ -106,7 +106,8 @@ def evaluate_model(models_name:list[str],number_of_runs=20,patients_per_sample=1
     models=list(set(models))
     print(models)
     # rng_legacy_engine = np.random.RandomState(24)
-    rng = np.random.default_rng(seed=24)
+    rng = np.random.default_rng(seed=seed)
+    rng.advance(fast_forward)
     # np.random.seed(24)
     graph = adj_mat.Graph()
     results=[]
