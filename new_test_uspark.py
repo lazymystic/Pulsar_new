@@ -107,7 +107,7 @@ def evaluate_model(models_name:list[str],number_of_runs=20,patients_per_sample=1
     print(models)
     # rng_legacy_engine = np.random.RandomState(24)
     rng = np.random.default_rng(seed=seed)
-    rng.advance(fast_forward)
+    rng.bit_generator.advance(fast_forward)
     # np.random.seed(24)
     graph = adj_mat.Graph()
     results=[]
