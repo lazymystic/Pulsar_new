@@ -95,7 +95,7 @@ def calculate_mean_and_ci(data, confidence=0.95):
     return f"{mean:.2f} \u00B1 {margin_of_error:.2f}"
 
 
-def evaluate_model(models_name:list[str],number_of_runs=20):
+def evaluate_model(models_name:list[str],number_of_runs=20,patients_per_sample=120):
     # Start timing the script execution
     script_start_time = time.time()
     print(f"[INFO] Script execution started at: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(script_start_time))}")
@@ -110,7 +110,7 @@ def evaluate_model(models_name:list[str],number_of_runs=20):
         # first inference
         inference_output={}
         run_specific_results=[]
-        sampled_ids=np.random.choice(patient_ids,120,replace=True)
+        sampled_ids=np.random.choice(patient_ids,patients_per_sample,replace=True)
         df_test = get_test_data(sampled_ids)
         test_numpy = df_to_numpy(df_test)
         print(f"starting execution for {_} runs")
@@ -162,7 +162,7 @@ def evaluate_model(models_name:list[str],number_of_runs=20):
             preds_test=np.zeros(1,dtype=float)
             gt_test=inference_output["groundtruth"] 
             for model_required in models_required:
-                preds_test += weights[models_required]*inference_output[model_required]
+                preds_test += weights[model_required]*inference_output[model_required]
             preds_test = np.argmax(preds_test, axis=1).flatten()
             accuracy = accuracy_score(gt_test, preds_test)
             precision, recall, f1_macro, _ = precision_recall_fscore_support(gt_test, preds_test, average='macro',zero_division=0)
