@@ -100,7 +100,7 @@ def evaluate_model(models_name:list[str],number_of_runs=20):
     script_start_time = time.time()
     print(f"[INFO] Script execution started at: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(script_start_time))}")
     
-    models = [x for item in models_name for x in ([item] if item!='Pulsar' else ['JS_AC_PU', 'BS_AC_PU', 'VS_AC_PU' , 'AS_AC_PU'])]
+    models = [x for item in models_name for x in ([item] if item!='PULSAR' else ['JS_AC_PU', 'BS_AC_PU', 'VS_AC_PU' , 'AS_AC_PU'])]
     models=list(set(models))
     np.random.seed(24)
     graph = adj_mat.Graph()
@@ -156,8 +156,8 @@ def evaluate_model(models_name:list[str],number_of_runs=20):
             print(f"[INFO] Model {model_name} completed in: {model_duration:.2f} seconds ({model_duration/60:.2f} minutes)")
         # result generation
         for model_name in models_name:
-            models_required=[model_name] if model_name !="Pulsar" else ['JS_AC_PU', 'BS_AC_PU', 'VS_AC_PU' , 'AS_AC_PU']
-            weights={'JS_AC_PU':0.2, 'BS_AC_PU':0.4, 'VS_AC_PU':0.1 , 'AS_AC_PU':0.3}if model_name!='Pulsar' else {model_name:1}
+            models_required=[model_name] if model_name !="PULSAR" else ['JS_AC_PU', 'BS_AC_PU', 'VS_AC_PU' , 'AS_AC_PU']
+            weights={'JS_AC_PU':0.2, 'BS_AC_PU':0.4, 'VS_AC_PU':0.1 , 'AS_AC_PU':0.3}if model_name!='PULSAR' else {model_name:1}
             preds_test=np.zeros(1,dtype=float)
             gt_test=inference_output["groundtruth"] 
             for model_required in models_required:
