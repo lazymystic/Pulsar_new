@@ -172,7 +172,7 @@ def evaluate_model(models_name:list[str],number_of_runs=20,patients_per_sample=1
             run_specific_results.append({'Model':model_name, 'Acc': accuracy, 'Prec':precision, 'Rec':recall, 'F1 (macro)':f1_macro, 'F1 (weighted)':f1_weighted, 'AUC':auroc})
         results.extend(run_specific_results)
         df_results=pd.DataFrame(run_specific_results)
-        print(df_results)
+        print(df_results.to_string(index=False))
     # Create a DataFrame for the results
     df_results = pd.DataFrame(results)
     df_results = df_results.groupby('Model').agg(calculate_mean_and_ci).reset_index()
