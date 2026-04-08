@@ -116,7 +116,7 @@ def evaluate_model(models_name:list[str],number_of_runs=20):
         for model_name in models:
             model_start_time = time.time()
             print(f"\n[INFO] Starting evaluation for model: {model_name}")
-            adaptive=len(_model_name.split('_')) > 1 and _model_name.split('_')[1] == 'AC'        
+            adaptive=len(model_name.split('_')) > 1 and model_name.split('_')[1] == 'AC'        
             model = aagcn_small.Model(adaptive=adaptive, num_class=CFG.num_classes, num_point=21, num_person=1, graph=graph, drop_out=0.5, in_channels=CFG.num_feats)
             checkpoint = torch.load(f'./pretrained_models/{model_name}/model.pth', map_location=device,weights_only=False)
             model_state_dict = checkpoint['model_state_dict']
