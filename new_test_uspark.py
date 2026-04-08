@@ -106,7 +106,7 @@ def evaluate_model(models_name:list[str],number_of_runs=20,patients_per_sample=1
     models=list(set(models))
     print(models)
     from numpy.random import Generator, MT19937
-    rng_legacy_engine = Generator(MT19937(42))
+    rng_legacy_engine = Generator(MT19937(24))
     # rng = np.random.default_rng(seed=24)
     # np.random.seed(24)
     graph = adj_mat.Graph()
