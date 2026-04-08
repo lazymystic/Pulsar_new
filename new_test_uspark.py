@@ -158,8 +158,7 @@ def evaluate_model(models_name:list[str],number_of_runs=20,patients_per_sample=1
         # result generation
         for model_name in models_name:
             models_required=[model_name] if model_name !="PULSAR" else ['JS_AC_PU', 'BS_AC_PU', 'VS_AC_PU' , 'AS_AC_PU']
-            weights={'JS_AC_PU':0.2, 'BS_AC_PU':0.4, 'VS_AC_PU':0.1 , 'AS_AC_PU':0.3}if model_name!='PULSAR' else {model_name:1.0}
-            print(weights,inference_output)
+            weights={'JS_AC_PU':0.2, 'BS_AC_PU':0.4, 'VS_AC_PU':0.1 , 'AS_AC_PU':0.3}if model_name=='PULSAR' else {model_name:1.0}
             preds_test=np.zeros(1,dtype=float)
             gt_test=inference_output["groundtruth"] 
             for model_required in models_required:
