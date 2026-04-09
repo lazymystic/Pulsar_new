@@ -15,7 +15,7 @@ from sklearn.metrics import classification_report
 from sklearn.utils import class_weight
 
 from model import aagcn_small, loss
-from data_preprocessing.handpose_dataset import HandPoseDatasetNumpy
+from data_preprocessing.handpose_dataset import HandPoseDatasetNumpy,HandPoseDatasetMapped
 from data_preprocessing.load_data import df_to_numpy
 from config import CFG
 from utils import adj_mat
@@ -75,6 +75,9 @@ def get_test_data(test_ids):
     df_test = pd.concat(test_dfs,ignore_index=True)
     return df_test
 
+def get_test_data_list_numpy(test_ids):
+    return [df_to_numpy(df) for df in dfs_from_ids(test_ids) if df.shape[0]>0]
+
 # Device detection: CUDA > MPS > CPU
 if torch.cuda.is_available():
     device = torch.device("cuda")
@@ -118,8 +121,9 @@ def evaluate_model(models_name:list[str],number_of_runs=20,patients_per_sample=1
         inference_output={}
         run_specific_results=[]
         sampled_ids=rng.choice(patient_ids,patients_per_sample,replace=True)
-        df_test = get_test_data(sampled_ids)
-        test_numpy = df_to_numpy(df_test)
+        # df_test = get_test_data(sampled_ids)
+        # test_numpy = df_to_numpy(df_test)
+        test_numpy_list=get_test_data_list_numpy(sampled_ids)
         print(f"starting execution for {_} runs")
         for model_name in models:
             model_start_time = time.time()
@@ -132,7 +136,8 @@ def evaluate_model(models_name:list[str],number_of_runs=20,patients_per_sample=1
             model.to(device)
             criterion = loss.FocalLoss() if CFG.loss_fn == "Focal" else nn.CrossEntropyLoss()
             # cumulative_metrics = {'accuracy': 0, 'precision': 0, 'recall': 0, 'f1_macro': 0, 'f1_weighted': 0, 'auroc': 0}
-            test_set = HandPoseDatasetNumpy(test_numpy,joint_stream=model_name.startswith('JS'),bone_stream=model_name.startswith('BS'),vel_stream=model_name.startswith('VS'),acc_stream=model_name.startswith('AS'))
+            # test_set = HandPoseDatasetNumpy(test_numpy,joint_stream=model_name.startswith('JS'),bone_stream=model_name.startswith('BS'),vel_stream=model_name.startswith('VS'),acc_stream=model_name.startswith('AS'))
+            test_set = HandPoseDatasetMapped(test_numpy_list,joint_stream=model_name.startswith('JS'),bone_stream=model_name.startswith('BS'),vel_stream=model_name.startswith('VS'),acc_stream=model_name.startswith('AS'))
             test_loader = DataLoader(test_set, batch_size=CFG.batch_size, drop_last=True, pin_memory=True)
             model.eval()
             preds = []
