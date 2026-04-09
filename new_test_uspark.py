@@ -72,7 +72,7 @@ def dfs_from_ids(ids,get_augmented=True):
 
 def get_test_data(test_ids):
     test_dfs = dfs_from_ids(test_ids)
-    df_test = pd.concat(test_dfs)
+    df_test = pd.concat(test_dfs,ignore_index=True)
     return df_test
 
 # Device detection: CUDA > MPS > CPU
