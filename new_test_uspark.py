@@ -183,6 +183,8 @@ def evaluate_model(models_name:list[str],number_of_runs=20,patients_per_sample=1
     df_results = pd.DataFrame(results)
     df_results.to_csv('uspark_test_set_scores.csv', index=False)
     df_results = df_results.groupby('Model').agg(calculate_mean_and_ci).reset_index()
+    df_results['Model'] = pd.Categorical(df_results['Model'], categories=models_name, ordered=True)
+    df_results = df_results.sort_values('Model').reset_index(drop=True)
     print(df_results.to_string(index=False))
     # End timing and print total execution time
     script_end_time = time.time()
