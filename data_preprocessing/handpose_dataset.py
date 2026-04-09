@@ -14,6 +14,7 @@ from utils import adj_mat
 class HandPoseDatasetNumpy(Dataset):
     def __init__(self, data, joint_stream=CFG.joint_stream,bone_stream=CFG.bone_stream, vel_stream=CFG.vel_stream, acc_stream=CFG.acc_stream):
         self.data = data
+        self.joint_stream=joint_stream
         self.bone_stream = bone_stream
         self.vel_stream = vel_stream
         self.acc_stream = acc_stream
@@ -150,8 +151,12 @@ class HandImageDataset(Dataset):
 
 
 class HandPoseDatasetMapped(Dataset):
-    def __init__(self, data_list):
+    def __init__(self, data_list, joint_stream=CFG.joint_stream,bone_stream=CFG.bone_stream, vel_stream=CFG.vel_stream, acc_stream=CFG.acc_stream):
         self.data_list = data_list # List of tuples: [(x1, y1), (x2, y2), ...]
+        self.joint_stream=joint_stream
+        self.bone_stream = bone_stream
+        self.vel_stream = vel_stream
+        self.acc_stream = acc_stream
         self.index_map = [] 
         
         # Build the Index Map
@@ -198,20 +203,20 @@ class HandPoseDatasetMapped(Dataset):
             
             x = np.concatenate((x, add_feats),axis=2)
 
-        if CFG.bone_stream:
+        if self.bone_stream:
             dist = np.zeros_like(x)
             for v1, v2 in adj_mat.inward:
                 dist[:, v1, :] = x[:, v2, :] - x[:, v1, :]
             x = dist
 
-        if CFG.vel_stream:
+        if self.vel_stream:
             dist = np.zeros_like(x)
             for v1, v2 in adj_mat.inward:
                 dist[:, v1, :] = x[:, v2, :] - x[:, v1, :]
             vel = np.gradient(dist, axis=0)
             x = vel
             
-        if CFG.acc_stream:
+        if self.acc_stream:
             dist = np.zeros_like(x)
             for v1, v2 in adj_mat.inward:
                 dist[:, v1, :] = x[:, v2, :] - x[:, v1, :]
