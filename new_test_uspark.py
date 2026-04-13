@@ -23,7 +23,7 @@ import torchvision
 
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support, roc_auc_score
 
-dataset_path = './datasets/banglapark_finger_tapping/test_data'
+dataset_path = './datasets/uspark_finger_tapping/test_data'
 
 augmentations = ["original", "flip-vert", "flip-hor", "flip-hor-vert"]
 
