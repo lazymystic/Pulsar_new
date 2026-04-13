@@ -141,7 +141,7 @@ def evaluate_model(models_name:list[str],number_of_runs=20,patients_per_sample=1
         # first inference
         inference_output={}
         run_specific_results=[]
-        sampled_ids=rng.choice(patient_ids,patients_per_sample,replace=True)
+        sampled_ids=rng.choice(patient_ids,patients_per_sample,replace=True) if patients_per_sample>0 else patient_ids
         # df_test = get_test_data(sampled_ids)
         # test_numpy = df_to_numpy(df_test)
         test_numpy_list=get_test_data_list_numpy(sampled_ids)
