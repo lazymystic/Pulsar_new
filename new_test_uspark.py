@@ -123,7 +123,7 @@ def evaluate_model(models_name:list[str],number_of_runs=20,patients_per_sample=1
         sampled_ids=rng.choice(patient_ids,patients_per_sample,replace=True)
         # df_test = get_test_data(sampled_ids)
         # test_numpy = df_to_numpy(df_test)
-        test_numpy_list=get_test_data_list_numpy(patient_ids)
+        test_numpy_list=get_test_data_list_numpy(sampled_ids)
         print(f"starting execution for {_} runs")
         for model_name in models:
             model_start_time = time.time()
