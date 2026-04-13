@@ -139,7 +139,7 @@ def evaluate_model(models_name:list[str],number_of_runs=20,patients_per_sample=1
             # test_set = HandPoseDatasetNumpy(test_numpy,joint_stream=model_name.startswith('JS'),bone_stream=model_name.startswith('BS'),vel_stream=model_name.startswith('VS'),acc_stream=model_name.startswith('AS'))
             test_set = HandPoseDatasetMapped(test_numpy_list,joint_stream=model_name.startswith('JS'),bone_stream=model_name.startswith('BS'),vel_stream=model_name.startswith('VS'),acc_stream=model_name.startswith('AS'))
             test_loader = DataLoader(test_set, batch_size=CFG.batch_size, drop_last=True, pin_memory=True)
-            print(test_loader.shape)
+            print(len(test_loader))
             model.eval()
             preds = []
             groundtruth = []
