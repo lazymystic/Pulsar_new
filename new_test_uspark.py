@@ -15,7 +15,7 @@ from sklearn.metrics import classification_report
 from sklearn.utils import class_weight
 
 from model import aagcn_small, loss
-from data_preprocessing.handpose_dataset import HandPoseDatasetNumpy,HandPoseDatasetMapped
+from data_preprocessing.handpose_dataset import HandPoseDatasetMapped
 from data_preprocessing.load_data import df_to_numpy
 from config import CFG
 from utils import adj_mat

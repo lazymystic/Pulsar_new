@@ -58,7 +58,7 @@ inward = [  (0, 1), (0, 5), (0, 9), (0, 13), (0, 17),
 
 if CFG.add_joints_mode == "rev":
     inward_add1 = [(5,4), (9,8), (13,12), (17,16), (20,13)] #reversed
-    inward_add2 = [(4,3), (8,6), (12,10), (16,14), (20,18)] #reversed
+    inward_add2 = [(4,2), (8,6), (12,10), (16,14), (20,18)] #reversed
 
 if CFG.add_joints_mode == "ori":
     inward_add1 = [(4,5), (8,9), (12,13), (16,17), (13,20)]

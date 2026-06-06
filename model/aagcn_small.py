@@ -194,90 +194,135 @@ class TCN_GCN_unit(nn.Module):
         return y
 
 
-class Model(nn.Module):
-    def __init__(self, num_class=60, num_point=25, num_person=2, graph=None, graph_args=dict(), in_channels=3,
-                 drop_out=0, adaptive=True, attention=True):
-        super(Model, self).__init__()
+# class Model(nn.Module):
+#     def __init__(self, num_class=60, num_point=25, num_person=2, graph=None, graph_args=dict(), in_channels=3,
+#                  drop_out=0, adaptive=True, attention=True):
+#         super(Model, self).__init__()
 
-        if graph is None:
-            raise ValueError()
+#         if graph is None:
+#             raise ValueError()
 
-        self.graph = graph
+#         self.graph = graph
 
-        A = self.graph.A
-        self.num_class = num_class
+#         A = self.graph.A
+#         self.num_class = num_class
 
-        self.data_bn = nn.BatchNorm1d(num_person * in_channels * num_point)
+#         self.data_bn = nn.BatchNorm1d(num_person * in_channels * num_point)
 
-        self.l1 = TCN_GCN_unit(in_channels, 64, A, residual=False, adaptive=adaptive, attention=attention)
-        # self.l2 = TCN_GCN_unit(64, 64, A, adaptive=adaptive, attention=attention)
-        # self.l3 = TCN_GCN_unit(64, 64, A, adaptive=adaptive, attention=attention)
-        # self.l4 = TCN_GCN_unit(64, 64, A, adaptive=adaptive, attention=attention)
-        self.l5 = TCN_GCN_unit(64, 128, A, stride=2, adaptive=adaptive, attention=attention)
-        # self.l6 = TCN_GCN_unit(128, 128, A, adaptive=adaptive, attention=attention)
-        # self.l7 = TCN_GCN_unit(128, 128, A, stride=2, adaptive=adaptive, attention=attention)
+#         self.l1 = TCN_GCN_unit(in_channels, 64, A, residual=False, adaptive=adaptive, attention=attention)
+#         # self.l2 = TCN_GCN_unit(64, 64, A, adaptive=adaptive, attention=attention)
+#         # self.l3 = TCN_GCN_unit(64, 64, A, adaptive=adaptive, attention=attention)
+#         # self.l4 = TCN_GCN_unit(64, 64, A, adaptive=adaptive, attention=attention)
+#         self.l5 = TCN_GCN_unit(64, 128, A, stride=2, adaptive=adaptive, attention=attention)
+#         # self.l6 = TCN_GCN_unit(128, 128, A, adaptive=adaptive, attention=attention)
+#         # self.l7 = TCN_GCN_unit(128, 128, A, stride=2, adaptive=adaptive, attention=attention)
 
 
-        self.fc = nn.Linear(128, num_class)
-        nn.init.normal_(self.fc.weight, 0, math.sqrt(2. / num_class))
-        bn_init(self.data_bn, 1)
-        if drop_out:
-            self.drop_out = nn.Dropout(drop_out)
-        else:
-            self.drop_out = lambda x: x
+#         self.fc = nn.Linear(128, num_class)
+#         nn.init.normal_(self.fc.weight, 0, math.sqrt(2. / num_class))
+#         bn_init(self.data_bn, 1)
+#         if drop_out:
+#             self.drop_out = nn.Dropout(drop_out)
+#         else:
+#             self.drop_out = lambda x: x
 
-    def forward(self, x):
-        #input shape: (bs, seq_len, nodes, num_feats)
-        #permute to shape: (bs, num_feats, seq_len, nodes, 1)
-        x = x.permute(0, 3, 1, 2)
-        x = torch.unsqueeze(x, dim=4)
+#     def forward(self, x):
+#         #input shape: (bs, seq_len, nodes, num_feats)
+#         #permute to shape: (bs, num_feats, seq_len, nodes, 1)
+#         x = x.permute(0, 3, 1, 2)
+#         x = torch.unsqueeze(x, dim=4)
 
-        N, C, T, V, M = x.size() #-> (bs, channel, seq_len, nodes, persons)
+#         N, C, T, V, M = x.size() #-> (bs, channel, seq_len, nodes, persons)
         
 
-        x = x.permute(0, 4, 3, 1, 2).contiguous().view(N, M * V * C, T)
-        x = self.data_bn(x)
-        x = x.view(N, M, V, C, T).permute(0, 1, 3, 4, 2).contiguous().view(N * M, C, T, V)
+#         x = x.permute(0, 4, 3, 1, 2).contiguous().view(N, M * V * C, T)
+#         x = self.data_bn(x)
+#         x = x.view(N, M, V, C, T).permute(0, 1, 3, 4, 2).contiguous().view(N * M, C, T, V)
 
-        x = self.l1(x)
-        # x = self.l2(x)
-        # x = self.l3(x)
-        # x = self.l4(x)
-        x = self.l5(x)
-        # x = self.l6(x)
-        # x = self.l7(x)
+#         x = self.l1(x)
+#         # x = self.l2(x)
+#         # x = self.l3(x)
+#         # x = self.l4(x)
+#         x = self.l5(x)
+#         # x = self.l6(x)
+#         # x = self.l7(x)
 
-        # N*M,C,T,V
-        c_new = x.size(1)
-        x = x.view(N, M, c_new, -1)
-        x = x.mean(3).mean(1) #get the features, dont take mean...
-        x = self.drop_out(x)
-        x = self.fc(x)
+#         # N*M,C,T,V
+#         c_new = x.size(1)
+#         x = x.view(N, M, c_new, -1)
+#         x = x.mean(3).mean(1) #get the features, dont take mean...
+#         x = self.drop_out(x)
+#         x = self.fc(x)
 
-        return x
+#         return x
 
+
+# def edge2mat(link, num_node):
+#     A = np.zeros((num_node, num_node))
+#     for i, j in link:
+#         A[j, i] = 1
+#     return A
+
+
+# def normalize_digraph(A):
+#     Dl = np.sum(A, 0)
+#     h, w = A.shape
+#     Dn = np.zeros((w, w))
+#     for i in range(w):
+#         if Dl[i] > 0:
+#             Dn[i, i] = Dl[i] ** (-1)
+#     AD = np.dot(A, Dn)
+#     return AD
+
+# def get_spatial_graph(num_node, self_link, inward, outward):
+#     I = edge2mat(self_link, num_node)
+#     In = normalize_digraph(edge2mat(inward, num_node))
+#     Out = normalize_digraph(edge2mat(outward, num_node))
+#     A = np.stack((I, In, Out))
+#     return A
+
+# class Graph:
+#     def __init__(self, num_node, self_link, inward, outward, neighbor, labeling_mode='spatial'):
+#         self.num_node = num_node
+#         self.self_link = self_link
+#         self.inward = inward
+#         self.outward = outward
+#         self.neighbor = neighbor
+#         self.A = self.get_adjacency_matrix(labeling_mode)
+
+#     def get_adjacency_matrix(self, labeling_mode=None):
+#         if labeling_mode is None:
+#             return self.A
+#         if labeling_mode == 'spatial':
+#             A = get_spatial_graph(self.num_node, self.self_link, self.inward, self.outward)
+#         else:
+#             raise ValueError()
+#         return A
+def get_symmetric_normalized_adj(A):
+    # Add self-loops to prevent isolated nodes from causing division by zero
+    A = A + np.eye(A.shape[0], dtype=np.float32)
+    
+    # Calculate degree matrix
+    D = np.sum(A, axis=1)
+    D[D <= 10e-5] = 10e-5  # Prevent infs
+    
+    # Calculate D^(-1/2)
+    D_inv_sqrt = np.power(D, -0.5)
+    D_inv_sqrt_mat = np.diag(D_inv_sqrt)
+    
+    # Apply symmetric normalization
+    return np.dot(D_inv_sqrt_mat, np.dot(A, D_inv_sqrt_mat))
 
 def edge2mat(link, num_node):
-    A = np.zeros((num_node, num_node))
+    A = np.zeros((num_node, num_node), dtype=np.float32)
     for i, j in link:
-        A[j, i] = 1
+        A[j, i] = 1.0
     return A
-
-
-def normalize_digraph(A):
-    Dl = np.sum(A, 0)
-    h, w = A.shape
-    Dn = np.zeros((w, w))
-    for i in range(w):
-        if Dl[i] > 0:
-            Dn[i, i] = Dl[i] ** (-1)
-    AD = np.dot(A, Dn)
-    return AD
 
 def get_spatial_graph(num_node, self_link, inward, outward):
     I = edge2mat(self_link, num_node)
-    In = normalize_digraph(edge2mat(inward, num_node))
-    Out = normalize_digraph(edge2mat(outward, num_node))
+    In = get_symmetric_normalized_adj(edge2mat(inward, num_node))
+    Out = get_symmetric_normalized_adj(edge2mat(outward, num_node))
     A = np.stack((I, In, Out))
     return A
 
@@ -298,4 +343,72 @@ class Graph:
         else:
             raise ValueError()
         return A
+
+# --- MODEL ARCHITECTURE ---
+
+class Model(nn.Module):
+    def __init__(self, graph, num_class=2, num_point=21, in_channels=3,
+                 drop_out=0.5, adaptive=True, attention=False, temporal_stride=1):
+        """
+        Defaults updated to match PULSAR framework:
+        num_class=2 (Binary PD classification), num_point=21 (Hand joints), 
+        drop_out=0.5, attention=False.
+        """
+        super(Model, self).__init__()
+
+        if graph is None:
+            raise ValueError("A graph object must be provided.")
+
+        self.graph = graph
+        A = self.graph.A
+        self.num_class = num_class
+
+        # 1. BN fixed: Removed the 'num_person' multiplier.
+        self.data_bn = nn.BatchNorm1d(in_channels * num_point)
+        nn.init.constant_(self.data_bn.weight, 1)
+        nn.init.constant_(self.data_bn.bias, 0)
+
+        # 2. Residual fixed: explicitly set to True
+        self.l1 = TCN_GCN_unit(in_channels, 64, A, residual=True, adaptive=adaptive, attention=attention)
+        
+        # 3. Stride fixed: exposed as a hyperparameter
+        self.l5 = TCN_GCN_unit(64, 128, A, stride=temporal_stride, adaptive=adaptive, attention=attention)
+
+        self.fc = nn.Linear(128, num_class)
+        nn.init.normal_(self.fc.weight, 0, math.sqrt(2. / num_class))
+        
+        if drop_out:
+            self.drop_out = nn.Dropout(drop_out)
+        else:
+            self.drop_out = lambda x: x
+
+    def forward(self, x):
+        # Input shape:  (Batch, Seq_len, Nodes, Channels) -> e.g., (32, 80, 21, 3)
+        # Permute to:   (Batch, Channels, Seq_len, Nodes) -> e.g., (32, 3, 80, 21)
+        x = x.permute(0, 3, 1, 2).contiguous()
+
+        N, C, T, V = x.size() 
+
+        # 4. Crash fixed: The 'M' (person) dimension is entirely removed.
+        # Safe flattening for 1D Data Normalization across the temporal axis
+        x = x.view(N, C * V, T)
+        x = self.data_bn(x)
+        
+        # Unflatten back to 4D tensor for GCN blocks
+        x = x.view(N, C, V, T).permute(0, 1, 3, 2).contiguous()
+
+        # AGCN Blocks
+        x = self.l1(x)
+        x = self.l5(x)
+
+        # 5. Global Average Pooling (Cleaned up)
+        # After l5, shape is (N, 128, T_out, V)
+        x = x.mean(-1)  # Pool over spatial nodes (V) -> (N, 128, T_out)
+        x = x.mean(-1)  # Pool over temporal frames (T_out) -> (N, 128)
+
+        # Classification Head
+        x = self.drop_out(x)
+        x = self.fc(x)
+
+        return x
 
