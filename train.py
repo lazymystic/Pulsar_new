@@ -164,7 +164,7 @@ def train_eval():
     if CFG.model_type == "AAGCN":
         # graph = adj_mat.Graph(adj_mat.num_node, adj_mat.self_link, adj_mat.inward, adj_mat.outward, adj_mat.neighbor)
         graph = adj_mat.Graph()
-        model = aagcn_small.Model(adaptive=True, num_class=CFG.num_classes, num_point=21, num_person=1, graph=graph, drop_out=0.5, in_channels=CFG.num_feats)
+        model = aagcn_small.Model(adaptive=True, num_class=CFG.num_classes, num_point=21, graph=graph, drop_out=0.5, in_channels=CFG.num_feats)
 
     start_epoch = 0
     model.cuda()
